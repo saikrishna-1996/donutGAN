@@ -14,9 +14,21 @@ import torchvision.utils as vutils
 from torch.autograd import Variable
 
 
+##importing some stuff for other datasets and preprocessing them
+#also importing tensorboard
+#import torchvision
+#from torchvision import datasets, transforms
+#from tensorboardX import SummaryWriter
+
+#from datasets import DSprites, Reconstruction
+#from datasets.celeba import CelebA
+
+#from utils.torch_utils import to_var
+#from utils.io_utils import get_latest_checkpoint
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', required=True, help='cifar10 | lsun | imagenet | folder | lfw | fake')
-parser.add_argument('--dataroot', required=True, help='path to dataset')
+parser.add_argument('--dataroot', help='path to dataset')
 parser.add_argument('--workers', type=int, help='number of data loading workers', default=2)
 parser.add_argument('--batchSize', type=int, default=64, help='input batch size')
 parser.add_argument('--imageSize', type=int, default=64, help='the height / width of the input image to network')
@@ -81,6 +93,12 @@ elif opt.dataset == 'cifar10':
 elif opt.dataset == 'fake':
     dataset = dset.FakeData(image_size=(3, opt.imageSize, opt.imageSize),
                             transform=transforms.ToTensor())
+
+elif opt.dataset == 'mnist':
+    dataset = dset.MNIST(root='/u/gottipav/nest-vae/data/mnist',
+            train=True, transform=transforms.ToTensor(), download=True)
+
+
 assert dataset
 dataloader = torch.utils.data.DataLoader(dataset, batch_size=opt.batchSize,
                                          shuffle=True, num_workers=int(opt.workers))
